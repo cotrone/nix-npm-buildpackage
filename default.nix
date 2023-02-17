@@ -190,7 +190,8 @@ in rec {
     let
       inherit (npmInfo packageSrc) pname version;
       nodeModules = mkNodeModules ({
-        inherit packageSrc extraEnvVars pname version;
+        inherit extraEnvVars pname version;
+        src = packageSrc;
       } // extraNodeModulesArgs);
     in
       assert asserts.assertMsg (!(args ? packageOverrides)) "buildNpmPackage-packageOverrides is no longer supported";
