@@ -179,7 +179,7 @@ in rec {
       '';
     } // extraEnvVars);
 
-  buildNpmPackage = args@{ src, npmBuild ? ''
+  buildNpmPackage = args@{ src, packageSrc ? src, npmBuild ? ''
     # this is what npm runs by default, only run when it exists
     ${jq}/bin/jq -e '.scripts.prepublish' package.json >/dev/null && npm run prepublish
     ${jq}/bin/jq -e '.scripts.prepare' package.json >/dev/null && npm run prepare
@@ -188,9 +188,9 @@ in rec {
     , # environment variables passed through to `npm ci`
     ... }:
     let
-      inherit (npmInfo src) pname version;
+      inherit (npmInfo packageSrc) pname version;
       nodeModules = mkNodeModules ({
-        inherit src extraEnvVars pname version;
+        inherit packageSrc extraEnvVars pname version;
       } // extraNodeModulesArgs);
     in
       assert asserts.assertMsg (!(args ? packageOverrides)) "buildNpmPackage-packageOverrides is no longer supported";
